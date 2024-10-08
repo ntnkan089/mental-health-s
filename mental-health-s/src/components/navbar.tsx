@@ -58,6 +58,9 @@ const Navbar: React.FC = () => {
           <li>
             <Link to="/" className="text-gray-700 hover:text-blue-600 transition duration-300">Home</Link>
           </li>
+          <li>
+                <Link to="/resources" className="text-gray-700 hover:text-blue-600 transition duration-300">Resources</Link>
+          </li>
           {tokenExpired ? (
             <>
               <li>
@@ -74,9 +77,7 @@ const Navbar: React.FC = () => {
               </li><li>
                 <Link to="/forums" className="text-gray-700 hover:text-blue-600 transition duration-300">Forums</Link>
               </li>
-              <li>
-                <Link to="/resources" className="text-gray-700 hover:text-blue-600 transition duration-300">Resources</Link>
-              </li>
+              
               <li>
                 <Link to="/facilitator-form" className="text-gray-700 hover:text-blue-600 transition duration-300">Apply to be a facilitator</Link>
               </li>

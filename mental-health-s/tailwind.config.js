@@ -9,6 +9,10 @@ export default {
 	  ],
   theme: {
   	extend: {
+		height: {
+			'128': '32rem',
+		
+		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -60,6 +64,14 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 }
+
+
+
+
+
+
+
+
 
 
 

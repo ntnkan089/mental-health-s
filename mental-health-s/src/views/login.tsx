@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
       // Assuming the token is in data.token
       localStorage.setItem('token', data); // Adjust according to your API response
 
-      navigate('/'); // Redirect to the home page after successful login
+      navigate('/profile'); // Redirect to the home page after successful login
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred'); // Set the error message
     }
@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleLogin} className="bg-white text-black rounded-lg shadow-lg p-6 max-w-md w-full">
         <div className="mb-4">
-          <label htmlFor="email" className="block mb-2">Email</label>
+          <label htmlFor="email" className="block mb-2">Username</label>
           <input
             type="text"
             id="email"

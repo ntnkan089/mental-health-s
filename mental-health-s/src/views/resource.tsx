@@ -2,6 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import MentalHealthVideos from "@/components/res/vidres";
 
+import WebScrapingComponent from "@/components/res/artiRes";
+
+
+import Therapis from "@/components/res/thera";
 export default function ResourcePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12">
@@ -36,6 +40,7 @@ export default function ResourcePage() {
               <h2 className="text-2xl font-semibold mb-4 text-gray-800">Informative Articles</h2>
               {/* Insert Article Resources Here */}
               <p className="text-gray-600">Here are some insightful articles on mental health. Learn more about different conditions, coping strategies, and well-being tips.</p>
+              <WebScrapingComponent />
             </div>
           </TabsContent>
 
@@ -45,13 +50,13 @@ export default function ResourcePage() {
               {/* Insert Therapist Resources Here */}
               <p className="text-gray-600">Looking for a therapist? Browse through recommended professionals and resources that can help you find the support you need.</p>
             </div>
+            <Therapis />
           </TabsContent>
         </Tabs>
       </div>
     </div>
   );
 }
-
 
 
 

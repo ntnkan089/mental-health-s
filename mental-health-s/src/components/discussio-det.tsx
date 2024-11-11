@@ -1,115 +1,187 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { MessageCircle, AlertTriangle, Send, User } from 'lucide-react'; // Importing icons
 
-// Example data (this would typically come from your backend)
-const discussionPosts = [
-  {
-    username: 'Angelwngs26',
-    date: 'July 2, 2015 - 10:03 pm',
-    totalPosts: 2,
-    joined: '07-02-2015',
-    content: "I just looked in the mirror because something was on my lip piercing and it caught my eye. I looked at it and there's puss coming out of it. I'm afraid the infection is not going to go away. I used an alcohol pad immediately after I noticed it. Does anyone know if you can get lip piercing infections to go away? It wasn't infected for the longest time and now all of a sudden it's infected. I'm having severe anxiety about this because I don't want to have to lose my piercing.",
-  },
-  {
-    username: 'Glaciel',
-    date: 'July 4, 2015 - 8:03 am',
-    totalPosts: 12,
-    joined: '10-03-2024',
-    content: "i have only bad to add. I had a nipple piercing that got sort-of-infected. It started to reject. I had to get it redone months later. But yours might be better ending?",
-  },
-  {
-    username: 'artista',
-    date: 'July 5, 2015 - 5:46 pm',
-    totalPosts: 868,
-    joined: '06-12-2011',
-    content: "I would go to your doc asap.",
-  },
-  // Add more example posts as needed
-];
+// Define types for discussion post and replies
+interface DiscussionPost {
+  
+  author: string;
+  date: string;
+  totalPosts: number;
+  joined: string;
+  content: string;
+  title: string; 
+
+}
+
+
+interface Reply {
+  username: string;
+  date: string;
+  content: string;
+}
 
 const DiscussionDetail: React.FC = () => {
-  const { discussionTitle } = useParams<{ discussionTitle: string }>(); // Get discussion title from URL
+  const { discussionId } = useParams<{ discussionId: string | undefined }>();
+  const discussionIdNumber = discussionId ? parseInt(discussionId, 10) : NaN; 
 
-  const [currentPage, setCurrentPage] = useState(1); // Track current page
-  const itemsPerPage = 2; // Number of items per page
+  const [discussionPost, setDiscussionPost] = useState<DiscussionPost | null>(null);
+  const [discussionReplies, setDiscussionReplies] = useState<Reply[]>([]);
+  const [replyContent, setReplyContent] = useState('');
 
-  // Calculate total pages
-  const totalPages = Math.ceil(discussionPosts.length / itemsPerPage);
+  useEffect(() => {
+    const fetchDiscussionPost = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:8080/api/discussions/${discussionIdNumber}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setDiscussionPost(data);
+        } else {
+          console.error('Failed to fetch discussion post');
+        }
+      } catch (error) {
+        console.error('Error fetching discussion post:', error);
+      }
+    };
 
-  // Calculate posts to display on the current page
-  const indexOfLastPost = currentPage * itemsPerPage;
-  const indexOfFirstPost = indexOfLastPost - itemsPerPage;
-  const currentPosts = discussionPosts.slice(indexOfFirstPost, indexOfLastPost);
+    const fetchReplies = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:8080/api/replies/discussion/${discussionIdNumber}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setDiscussionReplies(data);
+        } else {
+          console.error('Failed to fetch replies');
+        }
+      } catch (error) {
+        console.error('Error fetching replies:', error);
+      }
+    };
 
-  // Handle page change
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+    if (!isNaN(discussionIdNumber)) {
+      fetchDiscussionPost();
+      fetchReplies();
+    }
+  }, []);
+
+  // Handle reply submission
+  const handleReplySubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!replyContent.trim()) return; 
+
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`http://localhost:8080/api/replies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ discussionId: discussionIdNumber, content: replyContent, userId: JSON.parse(localStorage.getItem('user_z')!).userId, username: JSON.parse(localStorage.getItem('user_z')!).username, date: new Date().toISOString() }),
+      });
+
+      if (response.ok) {
+        const newReply = await response.json(); 
+        setDiscussionReplies((prevReplies) => [...prevReplies, newReply]);
+        setReplyContent(''); 
+      } else {
+        console.error('Failed to submit reply');
+      }
+    } catch (error) {
+      console.error('Error submitting reply:', error);
     }
   };
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  if (!discussionPost) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
-      <h1 className="text-2xl font-bold mb-4">{discussionTitle}</h1>
-
-      {currentPosts.map((post, index) => (
-        <div key={index} className="border-b border-gray-300 pb-4 mb-4">
-          <div className="flex justify-between">
-            <div>
-              <p className="font-semibold">{post.username}</p>
-              <p className="text-gray-600 text-sm">{post.date}</p>
-            </div>
-            <div className="text-gray-600">
-              <p>Spam? Offensive?</p>
-            </div>
+    <div className="max-w-3xl mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-6">
+      {/* Discussion Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-extrabold text-gray-800 mb-2 flex items-center gap-2">
+          <MessageCircle className="text-blue-500" /> {discussionPost.title}
+        </h1>
+        <div className="flex justify-between items-center text-sm text-gray-500">
+          <div className="flex items-center gap-2">
+            <User className="text-gray-400" />
+            <span className="font-semibold">{discussionPost.author}</span> ·{" "}
+            {new Date(discussionPost.date).toLocaleDateString()}
           </div>
-
-          <div className="text-gray-600">
-            <p className="font-semibold">Total Posts: {post.totalPosts}</p>
-            <p className="text-sm">Joined: {post.joined}</p>
+          <div className="text-sm text-red-600 cursor-pointer hover:text-red-500 flex items-center gap-1">
+            <AlertTriangle className="text-red-500" /> Report Post
           </div>
-
-          <p className="mt-2">{post.content}</p>
         </div>
-      ))}
-
-      {/* Pagination Controls */}
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-md ${
-            currentPage === 1 ? 'bg-gray-300' : 'bg-blue-500 text-white'
-          }`}
-        >
-          Previous
-        </button>
-        <span className="text-gray-600">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className={`px-4 py-2 rounded-md ${
-            currentPage === totalPages ? 'bg-gray-300' : 'bg-blue-500 text-white'
-          }`}
-        >
-          Next
-        </button>
+        <p className="mt-4 text-gray-700">{discussionPost.content}</p>
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-bold">Discussion Thread</h2>
-        <p>This being human is a guest house. A joy, a depression, a meanness, some momentary awareness comes as an unexpected visitor. Welcome and entertain them all. Treat each guest honorably.</p>
+      {/* Replies Section */}
+      <h2 className="text-xl font-bold mb-4">Replies</h2>
+      <div className="space-y-4">
+        {discussionReplies.length === 0 ? (
+          <p className="text-gray-500 italic">No replies yet. Be the first to join the conversation!</p>
+        ) : (
+          discussionReplies.map((reply, index) => (
+            <div
+              key={index}
+              className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm"
+            >
+              <div className="flex justify-between items-center">
+                <div className="text-sm flex items-center gap-2">
+                  <User className="text-gray-400" />
+                  <span className="font-semibold">{reply.username}</span> ·{" "}
+                  {new Date(reply.date).toLocaleDateString()}
+                </div>
+              </div>
+              <p className="mt-2 text-gray-700">{reply.content}</p>
+            </div>
+          ))
+        )}
+      </div>
+
+
+      {/* Reply Input Form */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-4">Add a Reply</h2>
+        <form onSubmit={handleReplySubmit} className="space-y-4">
+          <textarea
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            rows={4}
+            className="w-full border border-gray-300 rounded-lg p-3 shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-300 transition duration-200"
+            placeholder="Share your thoughts..."
+          />
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-200 flex justify-center items-center gap-2"
+          >
+            <Send className="text-white" /> Post Reply
+          </button>
+        </form>
       </div>
     </div>
   );
 };
 
 export default DiscussionDetail;
+
+
+
+
+
+

@@ -1,74 +1,144 @@
 // src/pages/CategoryDiscussion.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Search, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import DiscussionItem from '../components/discussioIte';
 import CreateDiscussionModal from '../components/discussio-moda';
 import Pagination from '../components/pagina';
 
-const discussions = [
-  { title: 'Coping with Anxiety', author: 'User1', replies: 3 },
-  { title: 'Mindfulness Techniques', author: 'User2', replies: 5 },
-  { title: 'Overcoming Stress', author: 'User3', replies: 1 },
-  { title: 'Managing Depression', author: 'User4', replies: 4 },
-  { title: 'Healthy Coping Mechanisms', author: 'User5', replies: 2 },
-  // More discussions can be added here
-];
+export interface Discussion {
+  discussionId: number;
+  title: string;
+  author: string;
+  content: string;
+  category: string;
+  date: Date;
+}
 
 const CategoryDiscussion: React.FC = () => {
   const { category } = useParams<{ category: string }>();
-  const [discussionList, setDiscussionList] = useState(discussions);
+  const [discussionList, setDiscussionList] = useState<Discussion[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // Number of discussions per page
+  const itemsPerPage = 3;
 
-  // Filter discussions based on search term
+  useEffect(() => {
+    const fetchDiscussions = async () => {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/discussions/category/${category}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDiscussionList(data);
+      } else {
+        console.error('Failed to fetch discussions:', response.status);
+      }
+    };
+
+    fetchDiscussions();
+  }, [category]);
+
   const filteredDiscussions = discussionList.filter(discussion =>
     discussion.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredDiscussions.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentDiscussions = filteredDiscussions.slice(startIndex, startIndex + itemsPerPage);
 
-  const handleCreateDiscussion = (title: string) => {
-    const newDiscussion = { title, author: 'You', replies: 0 }; // Assuming the current user is the author
-    setDiscussionList([...discussionList, newDiscussion]);
+  const handleCreateDiscussion = async (title: string, content: string) => {
+    const token = localStorage.getItem('token');
+    const newDiscussion = {
+      title,
+      author: JSON.parse(localStorage.getItem('user_z')!).username,
+      category,
+      content,
+      userId: JSON.parse(localStorage.getItem('user_z')!).userId,
+      date: new Date().toISOString(),
+    };
+
+    const response = await fetch('http://localhost:8080/api/discussions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(newDiscussion),
+    });
+
+    if (response.ok) {
+      const createdDiscussion = await response.json();
+      setDiscussionList([...discussionList, createdDiscussion]);
+    } else {
+      console.error('Failed to create discussion:', response.status);
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-      <h1 className="text-2xl font-bold mb-4">{category} Discussions</h1>
+    <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg mt-6 p-6">
+      <h1 className="text-3xl font-bold mb-4 text-center text-blue-600 flex items-center justify-center gap-2">
+        <MessageSquare className="w-6 h-6 text-blue-500" />
+        {category} Discussions
+      </h1>
       <CreateDiscussionModal onCreateDiscussion={handleCreateDiscussion} />
 
-      <div className="mb-4">
+      <div className="mt-5 mb-4 relative">
         <input
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search discussions..."
-          className="border rounded-md p-2 w-full"
+          className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
         />
+        <Search className="absolute top-2 right-3 w-5 h-5 text-gray-500" />
       </div>
 
-      <h2 className="text-xl mb-2">Topics</h2>
-      {currentDiscussions.map((discussion, index) => (
-        <DiscussionItem key={index} {...discussion} />
-      ))}
+      <h2 className="text-2xl mb-4 flex items-center gap-2">
+        <MessageSquare className="w-5 h-5 text-blue-500" />
+        Featured Topics
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {currentDiscussions.map((discussion) => (
+          <DiscussionItem key={discussion.discussionId} {...discussion} />
+        ))}
+      </div>
 
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+      <div className="mt-4 flex justify-center items-center gap-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="text-gray-500 hover:text-blue-500 disabled:opacity-50"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="text-gray-500 hover:text-blue-500 disabled:opacity-50"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   );
 };
+
 
 export default CategoryDiscussion;
 

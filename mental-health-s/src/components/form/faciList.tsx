@@ -28,7 +28,7 @@ const Applications: React.FC = () => {
 
     const fetchApplications = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/applications', {
+        const response = await fetch('https://health-s-deplo.onrender.com/api/applications', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const Applications: React.FC = () => {
       <h1 className="text-xl font-bold mb-4">Applications</h1>
       <ul className="space-y-4">
         {applications.map((application) => (
-          <li key={application.applicationId} className="border rounded-lg p-4 shadow-lg">
+          <li key={application.applicationId} className="border rounded-lg p-4 shadow-lg bg-white">
             <div className="flex justify-between">
               <div>
                 <h2 className="text-lg font-semibold">{application.name}</h2>

@@ -63,7 +63,7 @@ const ChartsPage: React.FC = () => {
   useEffect(() => {
     const fetchMoodHistory = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/wellness-tracking/${JSON.parse(localStorage.getItem('user_z')!).userId}`, {
+        const response = await fetch(`https://health-s-deplo.onrender.com/api/wellness-tracking/${JSON.parse(localStorage.getItem('user_z')!).userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const ChartsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex justify-center items-start p-6 bg-gray-50 min-h-screen">
+    <div className="flex justify-center items-start p-6  min-h-screen">
       {/* Sidebar */}
       <Sidebar />
 

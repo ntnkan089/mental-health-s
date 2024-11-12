@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const LandingPage = () => {
   return (
 
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen ">
       <header className="text-center mb-10">
         <h1 className="text-4xl font-bold">Mental Health Support Platform</h1>
         <p className="mt-4 text-lg">Your journey to mental well-being starts here.</p>

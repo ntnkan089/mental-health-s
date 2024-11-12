@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { Link } from 'react-router-dom';
+
 // Define the structure of an EventRegistration
 interface EventRegistration {
     regisId: number;
@@ -35,7 +37,7 @@ const EventRegistrations: React.FC = () => {
             const userId = JSON.parse(localStorage.getItem('user_z')!).userId;
             try {
                 // Fetch event registrations
-                const response = await fetch(`http://localhost:8080/api/event-registrations/user/${userId}`, {
+                const response = await fetch(`https://health-s-deplo.onrender.com/api/event-registrations/user/${userId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -61,7 +63,7 @@ const EventRegistrations: React.FC = () => {
             const userId = JSON.parse(localStorage.getItem('user_z')!).userId;
             try {
                 // Fetch hosted events
-                const response = await fetch(`http://localhost:8080/api/meetings/user/${userId}`, {
+                const response = await fetch(`https://health-s-deplo.onrender.com/api/meetings/user/${userId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -89,11 +91,11 @@ const EventRegistrations: React.FC = () => {
     }
 
     if (error) {
-        return <div className="p-4 text-red-500 text-center">Error loading event registrations.</div>;
+        console.log(error);
     }
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="p-6  min-h-screen">
             <h2 className="text-3xl font-bold mb-6 text-center">Your Event Registrations</h2>
             <div className="space-y-6">
                 {registrations.map((registration) => (
@@ -119,12 +121,12 @@ const EventRegistrations: React.FC = () => {
                             <p className="text-gray-700 mb-4">{registration.eventDescription}</p>
                         )}
                         <div className="mt-auto flex justify-end">
-                            <a
-                                href={`/event/${registration.meetingId}`}
+                            <Link
+                                to={`/event/${registration.meetingId}`}
                                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
                             >
                                 View Event
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 ))}
@@ -155,12 +157,12 @@ const EventRegistrations: React.FC = () => {
                             <p className="text-gray-700 mb-4">{event.description}</p>
                         )}
                         <div className="mt-auto flex justify-end">
-                            <a
-                                href={`/event/${event.meetingId}`}
+                            <Link
+                                to={`/event/${event.meetingId}`}
                                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
                             >
                                 View Event
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 ))}

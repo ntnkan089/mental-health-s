@@ -29,7 +29,7 @@ const ProfilePage: React.FC = () => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8080/profile', {
+        const response = await fetch('https://health-s-deplo.onrender.com/profile', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="flex justify-center items-start bg-gray-100 min-h-screen p-4">
+    <div className="flex justify-center items-start min-h-screen p-4">
       {/* Sidebar */}
       <Sidebar />
 

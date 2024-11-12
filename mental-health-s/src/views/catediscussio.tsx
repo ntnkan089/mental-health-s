@@ -25,7 +25,7 @@ const CategoryDiscussion: React.FC = () => {
   useEffect(() => {
     const fetchDiscussions = async () => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8080/api/discussions/category/${category}`, {
+      const response = await fetch(`https://health-s-deplo.onrender.com/api/discussions/category/${category}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const CategoryDiscussion: React.FC = () => {
       date: new Date().toISOString(),
     };
 
-    const response = await fetch('http://localhost:8080/api/discussions', {
+    const response = await fetch('https://health-s-deplo.onrender.com/api/discussions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

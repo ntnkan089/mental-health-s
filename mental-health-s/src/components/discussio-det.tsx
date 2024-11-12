@@ -20,7 +20,14 @@ interface Reply {
   date: string;
   content: string;
 }
-
+const convertNewlinesToBreaks = (text: string) => {
+  return text.split('\n').map((line, index) => (
+    <span key={index}>
+      {line}
+      <br />
+    </span>
+  ));
+};
 const DiscussionDetail: React.FC = () => {
   const { discussionId } = useParams<{ discussionId: string | undefined }>();
   const discussionIdNumber = discussionId ? parseInt(discussionId, 10) : NaN; 
@@ -33,7 +40,7 @@ const DiscussionDetail: React.FC = () => {
     const fetchDiscussionPost = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:8080/api/discussions/${discussionIdNumber}`, {
+        const response = await fetch(`https://health-s-deplo.onrender.com/api/discussions/${discussionIdNumber}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -54,7 +61,7 @@ const DiscussionDetail: React.FC = () => {
     const fetchReplies = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:8080/api/replies/discussion/${discussionIdNumber}`, {
+        const response = await fetch(`https://health-s-deplo.onrender.com/api/replies/discussion/${discussionIdNumber}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +92,7 @@ const DiscussionDetail: React.FC = () => {
 
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:8080/api/replies`, {
+      const response = await fetch(`https://health-s-deplo.onrender.com/api/replies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +134,7 @@ const DiscussionDetail: React.FC = () => {
             <AlertTriangle className="text-red-500" /> Report Post
           </div>
         </div>
-        <p className="mt-4 text-gray-700">{discussionPost.content}</p>
+        <p className="mt-4 text-gray-700">{convertNewlinesToBreaks(discussionPost.content)}</p>
       </div>
 
       {/* Replies Section */}
@@ -148,7 +155,7 @@ const DiscussionDetail: React.FC = () => {
                   {new Date(reply.date).toLocaleDateString()}
                 </div>
               </div>
-              <p className="mt-2 text-gray-700">{reply.content}</p>
+              <p className="mt-2 text-gray-700">{convertNewlinesToBreaks(reply.content)}</p>
             </div>
           ))
         )}
@@ -179,6 +186,9 @@ const DiscussionDetail: React.FC = () => {
 };
 
 export default DiscussionDetail;
+
+
+
 
 
 

@@ -13,7 +13,7 @@ const WebScrapingComponent: React.FC = () => {
     const [articleData, setArticleData] = useState<ArticleData[]>([]);
     
     const [error, setError] = useState<string | null>(null);
-    const [selectedTopic, setSelectedTopic] = useState<string | null>("mental-health");
+    const [selectedTopic, setSelectedTopic] = useState<string | null>("adhd");
 
     const handleScrapeArticles = async (topic: string | null) => {
         setError(null);
@@ -21,7 +21,7 @@ const WebScrapingComponent: React.FC = () => {
         const url = topic ? `${baseUrl}/${topic}` : baseUrl;
 
         try {
-            const response = await fetch(`http://localhost:8080/scrape-articles?url=${encodeURIComponent(url)}`);
+            const response = await fetch(`https://health-s-deplo.onrender.com/scrape-articles?url=${encodeURIComponent(url)}`);
             if (!response.ok) {
                 throw new Error('Error fetching article data');
             }
@@ -38,10 +38,14 @@ const WebScrapingComponent: React.FC = () => {
 
     const topics = [
         { key: 'mental-health', label: 'Mental Health' },
-        { key: 'mental-well-being', label: 'Mental Well-being' },
-        { key: 'depression', label: 'Depression' },
+        { key: 'substance-use', label: 'Substance Use Disorder' },
+        { key: 'alcohol-use-disorder', label: 'Alcohol Use Disorder' },
         { key: 'anxiety', label: 'Anxiety' },
-        { key: 'addiction', label: 'Addiction' },
+
+        { key: 'stress', label: 'Stress' },
+        
+
+        { key: 'adhd', label: 'ADHD' },
     ];
     
    
@@ -112,6 +116,10 @@ const WebScrapingComponent: React.FC = () => {
 
 
 export default WebScrapingComponent;
+
+
+
+
 
 
 

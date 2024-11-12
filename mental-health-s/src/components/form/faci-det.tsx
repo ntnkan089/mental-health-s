@@ -18,12 +18,14 @@ const ApplicationDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
   const [type, setType] = useState('');
+  const [actionLoading, setActionLoading] = useState<boolean>(false); // State to handle button loading
+  const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchApplicationDetails = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch(`http://localhost:8080/api/applications/${id}`, {
+        const response = await fetch(`https://health-s-deplo.onrender.com/api/applications/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -49,9 +51,10 @@ const ApplicationDetails: React.FC = () => {
   }, [id]);
 
   const handleAccept = async () => {
+    setActionLoading(true); // Show loading spinner on button click
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:8080/api/applications/${id}`, {
+      const response = await fetch(`https://health-s-deplo.onrender.com/api/applications/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +67,7 @@ const ApplicationDetails: React.FC = () => {
       }
 
       // Update user role to facilitator
-      const userResponse = await fetch(`http://localhost:8080/user/role?userId=${application!.userId}`, {
+      const userResponse = await fetch(`https://health-s-deplo.onrender.com/user/role?userId=${application!.userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -75,15 +78,21 @@ const ApplicationDetails: React.FC = () => {
       if (!userResponse.ok) {
         throw new Error('Failed to update user role');
       }
+
+      setMessage('Application accepted successfully!');
     } catch (err: unknown) {
       setError(err);
+      setMessage('Failed to accept the application.');
+    } finally {
+      setActionLoading(false); // Hide loading spinner after request
     }
   };
 
   const handleReject = async () => {
+    setActionLoading(true); // Show loading spinner on button click
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:8080/api/applications/${id}`, {
+      const response = await fetch(`https://health-s-deplo.onrender.com/api/applications/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -94,8 +103,13 @@ const ApplicationDetails: React.FC = () => {
       if (!response.ok) {
         throw new Error('Failed to reject application');
       }
+
+      setMessage('Application rejected successfully!');
     } catch (err: unknown) {
       setError(err);
+      setMessage('Failed to reject the application.');
+    } finally {
+      setActionLoading(false); // Hide loading spinner after request
     }
   };
 
@@ -149,31 +163,39 @@ const ApplicationDetails: React.FC = () => {
           )}
         </div>
       )}
+
+      {message && (
+        <div className={`mt-4 p-3 text-center ${message.includes('successfully') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded-lg`}>
+          {message}
+        </div>
+      )}
       
       <div className="mt-6 flex space-x-4 justify-center">
         <button
           onClick={handleReject}
-          className="px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 transition duration-200"
+          className={`px-4 py-2 ${actionLoading ? 'bg-gray-400' : 'bg-red-500'} text-white rounded shadow hover:bg-red-600 transition duration-200`}
+          disabled={actionLoading}
         >
-          Reject
+          {actionLoading ? 'Rejecting...' : 'Reject'}
         </button>
         <button
           onClick={handleAccept}
-          className="px-4 py-2 bg-amber-500 text-white rounded shadow hover:bg-amber-600 transition duration-200"
+          className={`px-4 py-2 ${actionLoading ? 'bg-gray-400' : 'bg-amber-500'} text-white rounded shadow hover:bg-amber-600 transition duration-200`}
+          disabled={actionLoading}
         >
-          Accept
+          {actionLoading ? 'Accepting...' : 'Accept'}
         </button>
       </div>
     </div>
   );
 };
 
+
+
+
+
+
 export default ApplicationDetails;
-
-
-
-
-
 
 
 

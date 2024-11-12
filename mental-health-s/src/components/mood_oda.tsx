@@ -92,7 +92,7 @@ const MoodTrackerModal: React.FC<{ userId: string }> = ({ userId }) => {
   // Function to post data to the wellness_tracking API
   const postToWellnessTracking = async (entry: WellnessEntry) => {
     try {
-      const response = await fetch('http://localhost:8080/api/wellness-tracking', {
+      const response = await fetch('https://health-s-deplo.onrender.com/api/wellness-tracking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -249,7 +249,6 @@ const MoodTrackerModal: React.FC<{ userId: string }> = ({ userId }) => {
 };
 
 export default MoodTrackerModal;
-
 
 
 

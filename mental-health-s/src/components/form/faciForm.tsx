@@ -61,7 +61,7 @@ export function FacilitatorApplicationForm() {
     const fetchApplications = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch(`http://localhost:8080/api/applications/user/${JSON.parse(localStorage.getItem('user_z')!).userId}`, {
+        const response = await fetch(`https://health-s-deplo.onrender.com/api/applications/user/${JSON.parse(localStorage.getItem('user_z')!).userId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -99,7 +99,7 @@ export function FacilitatorApplicationForm() {
 
       try {
         setLoading(true); // Set loading state to true
-        const response = await fetch('http://localhost:8080/api/files/upload', {
+        const response = await fetch('https://health-s-deplo.onrender.com/api/files/upload', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -124,7 +124,7 @@ export function FacilitatorApplicationForm() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/applications', {
+      const response = await fetch('https://health-s-deplo.onrender.com/api/applications', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

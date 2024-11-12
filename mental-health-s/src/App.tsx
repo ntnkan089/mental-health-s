@@ -45,11 +45,14 @@ import QuizLinks from './components/quizlink';
 import AllCate from './views/virtua_a';
 
 
+import BackgroundImageWrapper from './views/bg'
+
 const App: React.FC = () => {
 
   return (
     <UserProvider>
-      
+            <BackgroundImageWrapper>
+
     <Router>
       <div className="App">
         <Navbar />
@@ -86,18 +89,15 @@ const App: React.FC = () => {
       </div>
 
     </Router>
+    </BackgroundImageWrapper>
+
     </UserProvider>
-  
 );
 
 
 }
 
 export default App;
-
-
-
-
 
 
 

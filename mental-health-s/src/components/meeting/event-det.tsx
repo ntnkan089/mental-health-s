@@ -34,7 +34,7 @@ const MeetingDetail: React.FC = () => {
         const fetchMeeting = async () => {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`http://localhost:8080/api/meetings/${id}`, {
+                const response = await fetch(`https://health-s-deplo.onrender.com/api/meetings/${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const MeetingDetail: React.FC = () => {
             return;
         }
         try {
-            const response = await fetch('http://localhost:8080/api/event-registrations', {
+            const response = await fetch('https://health-s-deplo.onrender.com/api/event-registrations', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -173,4 +173,8 @@ const MeetingDetail: React.FC = () => {
 };
 
 export default MeetingDetail;
+
+
+
+
 

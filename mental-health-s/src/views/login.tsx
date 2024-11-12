@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/login', {
+      const response = await fetch('https://health-s-deplo.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-4xl font-bold mb-6">Login</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleLogin} className="bg-white text-black rounded-lg shadow-lg p-6 max-w-md w-full">

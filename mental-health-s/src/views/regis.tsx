@@ -27,7 +27,7 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8080/register', {
+      const response = await fetch('https://health-s-deplo.onrender.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen ">
       <h1 className="text-4xl font-bold mb-6">Register</h1>
       <form
         onSubmit={handleSubmit}

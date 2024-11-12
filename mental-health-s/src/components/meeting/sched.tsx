@@ -70,7 +70,7 @@ export const ScheduleMeetingModal = () => {
                 startTime: values.startTime,
                 duration: values.duration,
             }
-            const response = await fetch("http://localhost:8080/api/zoom/createMeeting", {
+            const response = await fetch("https://health-s-deplo.onrender.com/api/zoom/createMeeting", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export const ScheduleMeetingModal = () => {
                 const result = await response.json();
                 console.log("Meeting created:", result);
                 try {
-                    const detailsResponse = await fetch(`http://localhost:8080/api/meetings`, {
+                    const detailsResponse = await fetch(`https://health-s-deplo.onrender.com/api/meetings`, {
                         method: "POST",
                         headers: {         
                             "Content-Type": "application/json",
@@ -108,7 +108,7 @@ export const ScheduleMeetingModal = () => {
                 console.error("Error creating meeting");
             }  
         } else if (values.locationType === "in-person")  {
-            const response = await fetch("http://localhost:8080/api/meetings", {
+            const response = await fetch("https://health-s-deplo.onrender.com/api/meetings", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

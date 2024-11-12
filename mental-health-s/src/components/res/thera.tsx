@@ -21,7 +21,7 @@ const Therapis: React.FC = () => {
         const therapistUrl = `${baseUrl}${zipCode}`;
         
         try {
-            const response = await fetch(`http://localhost:8080/scrape?url=${encodeURIComponent(therapistUrl)}`);
+            const response = await fetch(`https://health-s-deplo.onrender.com/scrape?url=${encodeURIComponent(therapistUrl)}`);
             if (!response.ok) {
                 throw new Error('Error fetching therapist data');
             }
@@ -103,7 +103,6 @@ const Therapis: React.FC = () => {
 };
 
 export default Therapis;
-
 
 
 

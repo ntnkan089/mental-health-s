@@ -28,7 +28,7 @@ const MeetingsList: React.FC = () => {
         const fetchMeetings = async () => {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`http://localhost:8080/api/meetings/category/${category}`, {
+                const response = await fetch(`https://health-s-deplo.onrender.com/api/meetings/category/${category}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const MeetingsList: React.FC = () => {
     }, {});
 
     return (
-        <div className="p-4 lg:p-8 bg-gray-100 min-h-screen">
+        <div className="p-4 lg:p-8  min-h-screen">
             <h2 className="text-3xl font-bold mt-8 mb-6 text-center">Upcoming Meetings</h2>
 
             {Object.entries(groupedMeetings).map(([category, meetings]) => (

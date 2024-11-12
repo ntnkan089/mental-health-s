@@ -15,7 +15,7 @@ const QuizLinks = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
+    <div className="min-h-screen  py-12">
       <h1 className="text-3xl font-bold text-center mb-12">Mental Health Quizzes</h1>
       <div className="space-y-8 max-w-lg mx-auto">
         {quizzes.map((quiz, index) => (
